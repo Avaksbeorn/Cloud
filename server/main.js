@@ -36,7 +36,6 @@ if (!fs.existsSync(uploadsFolder)) {
 const posts = require("./routes/posts");
 app.use("/posts", posts);
 
-// Служим статические файлы
 app.use(express.static(path.join(dirname, "server", "public")));
 
 // Обработка POST-запроса для входа в систему
@@ -46,7 +45,6 @@ app.post("/login", async (req, res) => {
   try {
     const client = await pool.connect();
 
-    // Предполагается, что у вас есть таблица "users" с полями "username" и "password"
     const result = await client.query('SELECT * FROM users WHERE username = $1', [username]);
 
     if (result.rows.length > 0) {
@@ -77,7 +75,7 @@ app.get("/.*/", (req, res) => {
   res.sendFile(path.join(dirname, "server", "public", "index.html"));
 });
 
-// Слушаем порт 5000
+// Разворачиваем на 5000 порте
 const port = process.env.PORT || 5000;
 http.listen(port, "0.0.0.0", () => {
   localIpV4Address().then(function (ipAddress) {
