@@ -9,7 +9,7 @@ const zipper = require("zip-local");
 const os = require("os");
 const uploadsFolder = path.join(os.homedir(), "HomeCloud");
 
-// Setup storage for multer middleware
+// Настройка папки для хранения
 var storage = multer.diskStorage({
   // destination: path.join(__dirname, "../../uploads"),
   destination: path.join(uploadsFolder),
@@ -20,7 +20,7 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage });
 
-// Function for finding folders and files in the directory
+// Функция поиска папок и файлов в каталоге
 async function FilesAndFoldersArgs(getpath) {
   const promiseFolders = [];
   const promiseFiles = [];
@@ -46,7 +46,7 @@ async function FilesAndFoldersArgs(getpath) {
   };
 }
 
-// Create a new Folder
+// Создание папки
 router.post("/newFolder", (req, res) => {
   let receivedPath = req.body.path;
   let receivedFolderName = req.body.folderName.trim();
@@ -61,21 +61,21 @@ router.post("/newFolder", (req, res) => {
   res.redirect("/");
 });
 
-// Get Directories
+// Получение директории 
 router.post("/dir", async (req, res) => {
   const dir = req.body.dir;
   // console.log(await FilesAndFoldersArgs(dir));
   res.json(await FilesAndFoldersArgs(dir));
 });
 
-// Handles requests for downloading files
+// Обработка запросов на скачивание
 router.get("/downloadFile/:file(*)", (req, res) => {
   const fullPath = path.join(uploadsFolder, req.params.file);
   console.log(fullPath);
   res.sendFile(fullPath, (err) => console.log);
 });
 
-// Download folder
+// Загрузка папки
 router.post("/downloadFolder", (req, res) => {
   const fullPath = path.join(uploadsFolder, req.body.fullPath);
   const saveLocation = path.join(fullPath, `${req.body.folderName}.zip`);
@@ -88,7 +88,7 @@ router.post("/downloadFolder", (req, res) => {
   res.sendFile(saveLocation, (err) => console.log(err));
 });
 
-// Upload File
+// Загрузка файла на сервер
 router.post("/upload", upload.any(), (req, res) => {
   console.log(req.files);
   console.log(req.body);
@@ -103,14 +103,14 @@ router.post("/upload", upload.any(), (req, res) => {
   res.end("Файлы загружены");
 });
 
-// Delete a file
+// Удаление файла
 router.post("/deleteFile", (req, res) => {
   let fullPath = path.join(uploadsFolder, req.body.fullPath);
   fs.unlinkSync(fullPath);
   res.end("Удаление заверешено");
 });
 
-// Delete folder
+// Удаление папки
 router.post("/deleteFolder", (req, res) => {
   const fullPath = path.join(uploadsFolder, req.body.fullPath);
   if (fs.existsSync(fullPath)) {
