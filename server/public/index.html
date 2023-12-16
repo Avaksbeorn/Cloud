@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Авторизация</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 97%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    .button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Для входа в облако введите <br> логин и пароль</h1>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Имя пользователя" required>
+      <input type="password" id="password" placeholder="Пароль" required>
+      <button class="button" type="button" onclick="submitForm()">Войти</button>
+    </form>
+  </div>
+  <script>
+function submitForm() {
+  var username = document.getElementById("username").value;
+  var password = document.getElementById("password").value;
+
+  // Отправляем POST-запрос на сервер
+  fetch('/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ username, password }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // Авторизация успешна - выводим сообщение об успешной аутентификации
+      window.location.href = "main.html";
+      // Здесь можно выполнить дополнительные действия после успешной авторизации
+    } else {
+      // Обработка ошибки, например, вывод сообщения об ошибке
+      alert(data.data.message);
+    }
+  })
+  .catch(error => {
+    console.error('Ошибка при выполнении запроса:', error);
+  });
+}
+
+  </script>
+</body>
+</html>
+
